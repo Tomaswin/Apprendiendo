@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">Proyecto</string>
+    <string name="action_settings">Configuración</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+    <!-- Nombres de los items -->
+    <string-array name="nav_drawer_items">
+        <item>Seccion1</item>
+        <item>Seccion2</item>
+        <item>Seccion3</item>
+        <item>Seccion4</item>
+    </string-array>
+
+    <string name="app_names">Intro Slider</string>
+    <string name="title_activity_welcome">Home Screen</string>
+    <string name="next">NEXT</string>
+    <string name="return_key">RETURN</string>
+    <string name="start">ENTENDIDO</string>
+
+    <string name="slide_1_title">Sabias que</string>
+    <string name="slide_1_desc">En Instagram tenes efectos parecidos a los de Snapchat</string>
+
+    <string name="slide_2_title">A que no tenias idea</string>
+    <string name="slide_2_desc">Podes ver todas las historias de instagram apretando un boton</string>
+
+    <string name="slide_3_title">No tenias idea de esto?</string>
+    <string name="slide_3_desc">Todos pueden ver tu historia de instagram salvo porque ahora podes decir quien si y
+        quien no
+    </string>
+
+    <string name="slide_4_title">Nose</string>
+    <string name="slide_4_desc">Nose Nose Nose Nose Nose</string>
+
+    <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear
+        data
+    </string>
+    <string name="play_again">Play Again</string>
+
+
+    <string-array name="test_array">
+        <item>Rindt</item>
+        <item>Justin</item>
+        <item>Vincent</item>
+        <item>Emma</item>
+    </string-array>
+
+    <!-- Content Description -->
+    <string name="desc_list_item_icon">Item Icon</string>
+    <string name="title_activity_actividad_principal">ActividadPrincipal</string>
+
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="title_activity_nav">nav</string>
+    <string name="bienvenido_a_apprendiendo">Bienvenido a Apprendiendo</string>
+    <string name="segundo_mensaje_presentacion">Soy Alfred y sere tu guia y consultor en esta experiencia de aprendizaje
+        que queremos brindarte
+    </string>
+    <string name="skip">SKIP</string>
+</resources>

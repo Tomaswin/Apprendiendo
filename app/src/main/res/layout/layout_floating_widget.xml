@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content">
+
+    <RelativeLayout
+            android:id="@+id/relativeLayoutParent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="UselessParent">
+
+        <!-- this is the collapsed layout -->
+        <RelativeLayout
+                android:id="@+id/layoutCollapsed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+            <ImageView
+                    android:id="@+id/collapsed_iv"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_two" />
+
+            <ImageView
+                    android:id="@+id/buttonClose"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="50dp"
+                    android:src="@drawable/ic_three" />
+        </RelativeLayout>
+
+        <!-- this is the expanded layout -->
+        <LinearLayout
+                android:id="@+id/layoutExpanded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:visibility="gone">
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <androidx.viewpager.widget.ViewPager
+                        android:id="@+id/viewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                <LinearLayout
+                        android:id="@+id/layoutDots"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dots_height"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="@dimen/dots_margin_bottom"
+                        android:gravity="center"
+                        android:orientation="horizontal"/>
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:alpha=".5"
+                        android:layout_above="@id/layoutDots"
+                        android:background="@android:color/white" />
+
+                <Button
+                        android:id="@+id/btn_next"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:background="@null"
+                        android:text="@string/next"
+                        android:textColor="@android:color/white" />
+
+                <Button
+                        android:id="@+id/btn_return"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:background="@null"
+                        android:text="@string/return_key"
+                        android:textColor="@android:color/white" />
+            </RelativeLayout>
+
+            </LinearLayout>
+    </RelativeLayout>
+</FrameLayout>
