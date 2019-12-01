@@ -35,6 +35,7 @@ class HomeSection : AppCompatActivity() {
     private lateinit var listView: ListView
     private lateinit var drawerToggle: ActionBarDrawerToggle
     var interfaceClient: InterfaceClient = RestClientCall()
+    var viewDialog = ViewDialog(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,8 +73,9 @@ class HomeSection : AppCompatActivity() {
     }
 
     private fun setupListView() {
+        viewDialog.showDialog()
         listView = findViewById(R.id.application_list_view)
-        interfaceClient.getApplications(listView, applicationContext)
+        interfaceClient.getApplications(listView, applicationContext, viewDialog)
         listView.setOnItemClickListener { adapterView, view, i, l ->
             Log.i("Me apretaron", "")
             var relativeLayout = (view as ViewGroup).getChildAt(2)

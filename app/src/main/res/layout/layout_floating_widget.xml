@@ -23,22 +23,23 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_marginTop="8dp"
-                    android:src="@drawable/ic_two" />
+                    android:src="@drawable/alfred" />
 
             <ImageView
                     android:id="@+id/buttonClose"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginLeft="50dp"
-                    android:src="@drawable/ic_three" />
+                    android:src="@drawable/close_button" />
         </RelativeLayout>
 
         <!-- this is the expanded layout -->
         <LinearLayout
                 android:id="@+id/layoutExpanded"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:background="#73000000"
                 android:padding="8dp"
                 android:visibility="gone">
 
@@ -50,22 +51,6 @@
                         android:id="@+id/viewPager"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
-
-                <LinearLayout
-                        android:id="@+id/layoutDots"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dots_height"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginBottom="@dimen/dots_margin_bottom"
-                        android:gravity="center"
-                        android:orientation="horizontal"/>
-
-                <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:alpha=".5"
-                        android:layout_above="@id/layoutDots"
-                        android:background="@android:color/white" />
 
                 <Button
                         android:id="@+id/btn_next"

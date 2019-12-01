@@ -32,9 +32,11 @@ class ApplicationAdapter(private val context: Context, private val dataSource: A
 
         titleTextView.text = recipe.title
         subtitleTextView.text = recipe.description
-        detailTextView.text = recipe.label
+        detailTextView.text = recipe.course_count
 
-        Picasso.with(context).load(recipe.imageUrl).placeholder(R.mipmap.ic_launcher).into(thumbnailImageView)
+        if(recipe.image != ""){
+            Picasso.with(context).load(recipe.image + ".png").placeholder(R.mipmap.ic_launcher).into(thumbnailImageView)
+        }
         return rowView
     }
 

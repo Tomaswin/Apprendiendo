@@ -1,16 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/firsttimequarterpart">
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#5db374">
 
-    <LinearLayout
+<androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/intro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:textColor="@color/md_white_1000"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_marginTop="35dp"
+        android:text="Por ultimo, te explicamos brevemente la dinamica de las lecciones"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/logo"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/intro"
+            android:layout_width="320dp"
+            android:layout_height="320dp"
+            android:background="@drawable/alfred"
+            android:layout_centerHorizontal="true"/>
+
+<androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/explicacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:textColor="@color/md_white_1000"
+        android:textSize="18sp"
+        android:layout_below="@id/logo"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:text="Siempre tendras que recurrir a Alfred, el perro, ya que te dira lo siguiente que debas hacer, dandote la opcion de ir al siguiente paso, como retroceder por si te quedo alguna duda"/>
+
+<androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/welcomeMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:textColor="@color/md_white_1000"
+        android:textSize="20sp"
+        android:layout_below="@id/explicacion"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:text="¡Listo!"/>
+
+<androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/finish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:textColor="@color/md_white_1000"
+        android:textSize="20sp"
+        android:layout_below="@id/welcomeMessage"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:text="Ya podes empezar tu nueva experiencia de aprendizaje"/>
+
+<LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
-    </LinearLayout>
-
+</LinearLayout>
 </RelativeLayout>

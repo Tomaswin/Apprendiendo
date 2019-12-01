@@ -15,7 +15,11 @@ interface WebAPIService {
     @GET("getCourse.php")
     fun getCourses(@Query(QUERY_PARAM_QUERY) query: String): Call<JsonArray>
 
+    @GET("getSteps.php")
+    fun getSteps(@Query(QUERY_PARAM_STEP) query: String): Call<JsonArray>
+
     companion object {
         private const val QUERY_PARAM_QUERY = "application_name"
+        private const val QUERY_PARAM_STEP = "course_name"
     }
 }

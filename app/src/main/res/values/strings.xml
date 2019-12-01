@@ -16,7 +16,7 @@
     <string name="app_names">Intro Slider</string>
     <string name="title_activity_welcome">Home Screen</string>
     <string name="next">NEXT</string>
-    <string name="return_key">RETURN</string>
+    <string name="return_key">PREVIOUS</string>
     <string name="start">ENTENDIDO</string>
 
     <string name="slide_1_title">Sabias que</string>

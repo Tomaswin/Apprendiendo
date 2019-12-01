@@ -1,19 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/firsttimesecondpart">
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="#f46a6a">
 
-    <LinearLayout
+<androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/intro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:textColor="@color/md_white_1000"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"
+        android:text="Nuestra app, para dar al usuario una experiencia mas inmersiva propone la superposicion de pantallas,
+ aunque esto es un permiso que nos tenes que dar vos, una vez que se te abra la siguiente imagen"/>
+
+<androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/logo"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/intro"
+        android:layout_width="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_height="320dp"
+        android:background="@drawable/first"
+        android:layout_centerHorizontal="true"/>
+
+<androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/explicacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:textColor="@color/md_white_1000"
+        android:textSize="18sp"
+        android:layout_below="@id/logo"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:text="Imagen 1: Aqui esta el permiso, haz un touch sobre el asi pasa a estar como en la imagen 2"/>
+
+<androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/welcomeMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:textColor="@color/md_white_1000"
+        android:textSize="20sp"
+        android:layout_below="@id/explicacion"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:text="Continuemos"/>
+
+<LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true">
 
-
-
-    </LinearLayout>
-
-
+</LinearLayout>
 </RelativeLayout>

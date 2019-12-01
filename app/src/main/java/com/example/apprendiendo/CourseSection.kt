@@ -19,10 +19,12 @@ import android.widget.TextView
 import android.net.Uri
 import android.widget.Toast
 import android.content.pm.PackageManager
+import android.R.string.cancel
+import android.app.AlertDialog
+import android.content.DialogInterface
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
 
 
 
@@ -34,6 +36,9 @@ class CourseSection : AppCompatActivity() {
     private lateinit var listView: ListView
     private lateinit var drawerToggle: ActionBarDrawerToggle
     var interfaceClient: InterfaceClient = RestClientCall()
+    var viewDialog = ViewDialog(this)
+    var returnVal = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,43 +61,89 @@ class CourseSection : AppCompatActivity() {
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle)
         val b = intent.extras
-        if (b != null){
+        if (b != null) {
             b.getString("key")?.let { setupListView(it) }
         }
     }
 
-    private fun setupListView(textToRequest: String) {
+    private fun setupListView(applicationName: String) {
+        viewDialog.showDialog()
         listView = findViewById(R.id.course_list_view)
-        interfaceClient.getCourses(textToRequest, listView, applicationContext)
+        interfaceClient.getCourses(applicationName, listView, applicationContext, viewDialog)
         listView.setOnItemClickListener { adapterView, view, i, l ->
             Log.i("Me apretaron", "")
             var relativeLayout = (view as ViewGroup).getChildAt(2)
             var textView = (relativeLayout as ViewGroup).getChildAt(0)
             var textToRequest = (textView as TextView).text.toString()
+            var installApp = true
 
-
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                startService(Intent(this, FloatingWidgetService::class.java))
-                finish()
-            } else if (Settings.canDrawOverlays(this)) {
-                startService(Intent(this, FloatingWidgetService::class.java))
-                finish()
-            } else {
-                askPermission()
-                Toast.makeText(this, "You need System Alert Window Permission to do this", Toast.LENGTH_SHORT).show()
+            var packageName = "com." + applicationName.toLowerCase()
+            if (!openApp(packageName)) {
+                installApp = false
+                installTheApp(packageName)
             }
 
-            var packageName = "com." + textToRequest.toLowerCase()
-            try {
-                packageManager.getApplicationInfo(packageName, 0)
-                var launchIntent = packageManager.getLaunchIntentForPackage("com." + textToRequest.toLowerCase())
-                startActivity(launchIntent)
-
-            } catch (e: PackageManager.NameNotFoundException) {
-                //No existe esa app, indicarselo
+            if (installApp) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M && installApp) {
+                    var intent = Intent(this, FloatingWidgetService::class.java)
+                    intent.putExtra("extra", textToRequest)
+                    startService(intent)
+                    finish()
+                } else if (Settings.canDrawOverlays(this)) {
+                    var intent = Intent(this, FloatingWidgetService::class.java)
+                    intent.putExtra("extra", textToRequest)
+                    this.startService(intent)
+                    finish()
+                } else {
+                    askPermission()
+                    Toast.makeText(
+                        this,
+                        "You need System Alert Window Permission to do this",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
+    }
+
+    private fun openApp(packageApp: String): Boolean {
+        try {
+            packageManager.getApplicationInfo(packageApp, 0)
+            var launchIntent = packageManager.getLaunchIntentForPackage(packageApp)
+            startActivity(launchIntent)
+            return true
+        } catch (e: PackageManager.NameNotFoundException) {
+            installTheApp(packageApp)
+            return false
+        }
+
+    }
+
+    private fun installTheApp(packageApp: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("App request dont found")
+        builder.setMessage("You dont have install the app, do you want to install?")
+        //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
+
+        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+            dialog.cancel()
+            try {
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=$packageApp")
+                    )
+                )
+            } catch (anfe: android.content.ActivityNotFoundException) {
+            }
+            dialog.cancel()
+        }
+
+        builder.setNegativeButton(android.R.string.no) { dialog, which ->
+            dialog.cancel()
+        }
+
+        builder.show()
     }
 
     private fun askPermission() {
@@ -106,7 +157,13 @@ class CourseSection : AppCompatActivity() {
     private fun setupDrawerToggle(): ActionBarDrawerToggle {
         // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
         // and will not render the hamburger icon without it.
-        return ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open, R.string.drawer_close)
+        return ActionBarDrawerToggle(
+            this,
+            mDrawer,
+            toolbar,
+            R.string.drawer_open,
+            R.string.drawer_close
+        )
     }
 
     private fun setupDrawerContent(navigationView: NavigationView) {

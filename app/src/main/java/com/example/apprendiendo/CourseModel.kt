@@ -6,7 +6,8 @@ import org.json.JSONException
 
 class CourseModel(
     val title: String,
-    val description: String){
+    val description: String,
+    val image: String){
     //val course_count: String {
 
     companion object {
@@ -20,7 +21,8 @@ class CourseModel(
                 // Get Recipe objects from data
                 (0 until recipes.length()).mapTo(recipeList) {
                     CourseModel(recipes.getJSONObject(it).getString("title"),
-                        recipes.getJSONObject(it).getString("subtitle"))
+                        recipes.getJSONObject(it).getString("subtitle"),
+                        recipes.getJSONObject(it).getString("image"))
                         //recipes.getJSONObject(it).getString("course_count"))
                 }
             } catch (e: JSONException) {

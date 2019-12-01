@@ -8,9 +8,9 @@ import org.json.JSONObject
 class ApplicationModel(
     val title: String,
     val description: String,
-    //val course_count: String,
-    val imageUrl: String,
-    val label: String) {
+    val image: String,
+    val course_count: String){
+    //val imageUrl: String) {
 
     companion object {
 
@@ -25,8 +25,8 @@ class ApplicationModel(
                     ApplicationModel(recipes.getJSONObject(it).getString("title"),
                         recipes.getJSONObject(it).getString("subtitle"),
                         recipes.getJSONObject(it).getString("image"),
-                        recipes.getJSONObject(it).getString("url"))
-                        //recipes.getJSONObject(it).getString("course_count"))
+                        //recipes.getJSONObject(it).getString("url"),
+                        recipes.getJSONObject(it).getString("count_course"))
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()
