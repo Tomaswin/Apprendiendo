@@ -8,7 +8,9 @@ class StepsModel(
     val text: String,
     val image: String,
     val positionX: Int,
-    val positionY: Int){
+    val positionY: Int,
+    val sizeX: Int,
+    val sizeY: Int){
 
     companion object {
 
@@ -23,7 +25,9 @@ class StepsModel(
                     StepsModel(recipes.getJSONObject(it).getString("text"),
                         recipes.getJSONObject(it).getString("image"),
                         recipes.getJSONObject(it).getInt("xPosition"),
-                        recipes.getJSONObject(it).getInt("yPosition"))
+                        recipes.getJSONObject(it).getInt("yPosition"),
+                        recipes.getJSONObject(it).getInt("xsize"),
+                        recipes.getJSONObject(it).getInt("ysize"))
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()

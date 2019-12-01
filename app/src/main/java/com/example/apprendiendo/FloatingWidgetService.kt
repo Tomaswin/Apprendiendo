@@ -1,68 +1,19 @@
 package com.example.apprendiendo
 
-import android.app.PendingIntent.getActivity
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.*
-import android.graphics.Color
+import android.content.res.Resources
 import android.graphics.PixelFormat
-import android.os.Build
 import android.os.IBinder
-import android.text.Html
+import android.util.DisplayMetrics
 import android.view.*
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.*
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
-import kotlinx.android.synthetic.main.activity_first_time_app.*
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.util.Log
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.os.Bundle
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.media.Image
 import com.squareup.picasso.Picasso
-import android.util.DisplayMetrics
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.view.marginLeft
 import kotlin.math.roundToInt
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.view.MotionEvent
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.widget.RelativeLayout
-import android.view.ViewGroup.MarginLayoutParams
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
-
-
-
-
-
-
 
 
 class FloatingWidgetService : Service() {
@@ -89,7 +40,7 @@ class FloatingWidgetService : Service() {
 
     }
 
-    private fun initService(){
+    private fun initService() {
         mChatHeadView = LayoutInflater.from(this).inflate(R.layout.layout_floating_widget, null)
         btnReturn = mChatHeadView?.findViewById(R.id.btn_return) as Button
         btnNext = mChatHeadView?.findViewById(R.id.btn_next) as Button
@@ -193,7 +144,8 @@ class FloatingWidgetService : Service() {
                                 PixelFormat.TRANSLUCENT
                             )
                         }
-                        params.gravity = Gravity.TOP or Gravity.LEFT        //Initially view will be added to top-left corner
+                        params.gravity =
+                            Gravity.TOP or Gravity.LEFT        //Initially view will be added to top-left corner
                         params.x = 0
                         params.y = 100
                         mWindowManager!!.updateViewLayout(mChatHeadView, params)
@@ -220,7 +172,8 @@ class FloatingWidgetService : Service() {
                                     PixelFormat.TRANSLUCENT
                                 )
                             }
-                            params.gravity = Gravity.TOP or Gravity.LEFT        //Initially view will be added to top-left corner
+                            params.gravity =
+                                Gravity.TOP or Gravity.LEFT        //Initially view will be added to top-left corner
                             params.x = 0
                             params.y = 100
                             mWindowManager!!.updateViewLayout(mChatHeadView, params)
@@ -228,21 +181,21 @@ class FloatingWidgetService : Service() {
 
 
 
-                        if(viewPager.currentItem == 0){
+                        if (viewPager.currentItem == 0) {
                             btnReturn.text = "Return App"
-                        }else{
+                        } else {
                             btnReturn.text = getText(R.string.return_key)
                         }
 
                         btnReturn.setOnClickListener {
-                            if(viewPager.currentItem == 0){
+                            if (viewPager.currentItem == 0) {
                                 val intent = Intent(this@FloatingWidgetService, HomeSection::class.java)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 startActivity(intent)
 
                                 //close the service and remove the chat heads
                                 stopSelf()
-                            }else{
+                            } else {
                                 viewPager.setCurrentItem(steps - 1, true)
                                 btnReturn.text = getText(R.string.return_key)
                                 btnNext.text = getText(R.string.next)
@@ -279,7 +232,11 @@ class FloatingWidgetService : Service() {
                             override fun onPageScrollStateChanged(state: Int) {
                             }
 
-                            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                            override fun onPageScrolled(
+                                position: Int,
+                                positionOffset: Float,
+                                positionOffsetPixels: Int
+                            ) {
                             }
 
                             override fun onPageSelected(position: Int) {}
@@ -308,7 +265,7 @@ class FloatingWidgetService : Service() {
         })
     }
 
-    private fun setWrapContent(){
+    private fun setWrapContent() {
         val params: WindowManager.LayoutParams
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             params = WindowManager.LayoutParams(
@@ -335,9 +292,9 @@ class FloatingWidgetService : Service() {
 
     private fun getItem(i: Int) {
         steps = viewPager.currentItem + i
-        if(steps == 0){
+        if (steps == 0) {
             btnReturn.text = "Return App"
-        }else if(steps + 1 == stepsList.size){
+        } else if (steps + 1 == stepsList.size) {
             btnNext.text = "Return App"
         }
     }
@@ -360,10 +317,29 @@ class FloatingWidgetService : Service() {
             val view = layoutInflater!!.inflate(R.layout.content_expandable_service, container, false)
             val imageView = view.findViewById<ImageView>(R.id.imageView)
             val marginParams = MarginLayoutParams(imageView.getLayoutParams())
-            marginParams.setMargins(350,2500,0, 0)
+            var xMargin = getCorrectMargin(applicationContext.resources.displayMetrics.densityDpi, stepsList[position].positionX)
+            if(negativeValue(xMargin)){
+                xMargin = calculatedSizeHorizontal(applicationContext.resources.displayMetrics.widthPixels, stepsList[position].positionX)
+            }
+
+            var yMargin = getCorrectMargin(applicationContext.resources.displayMetrics.densityDpi, stepsList[position].positionY)
+            if(negativeValue(yMargin)){
+                yMargin = calculatedSizeVertical(applicationContext.resources.displayMetrics.heightPixels, stepsList[position].positionY)
+            }
+
+            marginParams.setMargins(xMargin, yMargin,0, 0)
             val layoutParams = LinearLayout.LayoutParams(marginParams)
             imageView.layoutParams = layoutParams
-            Picasso.with(applicationContext).load(stepsList[position].image).placeholder(R.mipmap.ic_launcher).into(imageView)
+            var xSize = getCorrectMargin(applicationContext.resources.displayMetrics.densityDpi, stepsList[position].sizeX)
+            if(negativeValue(xSize)){
+                xSize = calculatedSizeHorizontal(applicationContext.resources.displayMetrics.widthPixels, stepsList[position].sizeX)
+            }
+
+            var ySize = getCorrectMargin(applicationContext.resources.displayMetrics.densityDpi, stepsList[position].sizeY)
+            if(negativeValue(ySize)){
+                ySize = calculatedSizeVertical(applicationContext.resources.displayMetrics.heightPixels, stepsList[position].sizeY)
+            }
+            Picasso.with(applicationContext).load(stepsList[position].image).resize(xSize, ySize).placeholder(R.mipmap.ic_launcher).into(imageView)
             val textView = view.findViewById<TextView>(R.id.textView)
             container.addView(view)
 
@@ -382,6 +358,40 @@ class FloatingWidgetService : Service() {
             view = null
         }
 
+    }
+
+    private fun negativeValue(xMargin: Int): Boolean {
+        return xMargin == -1
+    }
+
+    private fun calculatedSizeVertical(screenSize: Int, position: Int): Int{
+        if(hasNavBar(applicationContext.resources)){
+            return (screenSize * position) / 2900
+        }else{
+            return (screenSize * position) / 3064
+        }
+    }
+
+    private fun calculatedSizeHorizontal(screenSize: Int, position: Int): Int{
+        return (screenSize * position) / 1440
+    }
+
+    private fun getCorrectMargin(densityDpi: Int, position: Int): Int {
+        when (densityDpi) {
+            DisplayMetrics.DENSITY_LOW -> return ((position - (position * 0.25)) / 4).roundToInt()
+            DisplayMetrics.DENSITY_MEDIUM -> return (position - position * 0.75).roundToInt()
+            DisplayMetrics.DENSITY_TV, DisplayMetrics.DENSITY_HIGH -> return ((position - (position * 0.25)) / 2).roundToInt()
+            DisplayMetrics.DENSITY_260, DisplayMetrics.DENSITY_280, DisplayMetrics.DENSITY_300, DisplayMetrics.DENSITY_XHIGH -> return (position - position * 0.50).roundToInt()
+            DisplayMetrics.DENSITY_340, DisplayMetrics.DENSITY_360, DisplayMetrics.DENSITY_400, DisplayMetrics.DENSITY_420, DisplayMetrics.DENSITY_440, DisplayMetrics.DENSITY_XXHIGH -> return (position - position * 0.25).roundToInt()
+            DisplayMetrics.DENSITY_560, DisplayMetrics.DENSITY_XXXHIGH -> return position
+        }
+
+        return -1
+    }
+
+    fun hasNavBar(resources: Resources): Boolean {
+        val id = resources.getIdentifier("config_showNavigationBar", "bool", "android")
+        return id > 0 && resources.getBoolean(id)
     }
 
     fun convertDpToPixel(dp: Float, context: Context): Int {
