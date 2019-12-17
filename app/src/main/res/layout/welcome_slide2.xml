@@ -8,13 +8,14 @@ android:background="#f46a6a">
         android:id="@+id/intro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_alignParentTop="true"
         android:textColor="@color/md_white_1000"
-        android:textSize="18sp"
+        android:textSize="14dp"
         android:textAlignment="center"
         android:textStyle="bold"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:text="Nuestra app, para dar al usuario una experiencia mas inmersiva propone la superposicion de pantallas,
  aunque esto es un permiso que nos tenes que dar vos, una vez que se te abra la siguiente imagen"/>
 
@@ -36,11 +37,11 @@ android:background="#f46a6a">
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
         android:textColor="@color/md_white_1000"
-        android:textSize="18sp"
+        android:textSize="14dp"
         android:layout_below="@id/logo"
         android:textAlignment="center"
         android:textStyle="bold"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text="Imagen 1: Aqui esta el permiso, haz un touch sobre el asi pasa a estar como en la imagen 2"/>
 
 <androidx.appcompat.widget.AppCompatTextView
@@ -50,11 +51,11 @@ android:background="#f46a6a">
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
         android:textColor="@color/md_white_1000"
-        android:textSize="20sp"
+        android:textSize="16dp"
         android:layout_below="@id/explicacion"
         android:textAlignment="center"
         android:textStyle="bold"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text="Continuemos"/>
 
 <LinearLayout

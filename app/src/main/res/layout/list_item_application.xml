@@ -56,7 +56,7 @@
             android:id="@+id/course_count"
             tools:text="Subtitle"
             android:textSize="16sp"
-            android:maxLines="3"
+            android:maxLines="4"
             android:layout_marginRight="8dp"
             android:layout_marginLeft="8dp"
             android:ellipsize="end"

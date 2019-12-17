@@ -1,31 +1,22 @@
 package com.example.apprendiendo
 
-import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.google.android.material.navigation.NavigationView
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.widget.Toolbar
-import android.view.MenuItem
-import android.widget.ListView
-import androidx.fragment.app.Fragment
-import androidx.appcompat.app.ActionBarDrawerToggle
-import com.google.gson.JsonObject
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.Retrofit
-import android.util.Log
-import android.view.ViewGroup
-import android.widget.TextView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import android.content.Intent
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.Settings
+import android.view.MenuItem
+import android.view.ViewGroup
+import android.widget.ListView
+import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.google.android.material.navigation.NavigationView
 
 
 class HomeSection : AppCompatActivity() {
@@ -36,14 +27,18 @@ class HomeSection : AppCompatActivity() {
     private lateinit var drawerToggle: ActionBarDrawerToggle
     var interfaceClient: InterfaceClient = RestClientCall()
     var viewDialog = ViewDialog(this)
+    lateinit var fragmentManager: FragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_section)
+        nvDrawer = findViewById(R.id.nvView)
+        setupDrawerContent(nvDrawer!!)
         // Create a new connection of retrofit
         interfaceClient.create()
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar)
+        toolbar?.title = "Seleccionar Aplicacion"
         setSupportActionBar(toolbar)
 
         // This will display an Up icon (<-), we will replace it with hamburger later
@@ -77,7 +72,6 @@ class HomeSection : AppCompatActivity() {
         listView = findViewById(R.id.application_list_view)
         interfaceClient.getApplications(listView, applicationContext, viewDialog)
         listView.setOnItemClickListener { adapterView, view, i, l ->
-            Log.i("Me apretaron", "")
             var relativeLayout = (view as ViewGroup).getChildAt(2)
             var textView = (relativeLayout as ViewGroup).getChildAt(0)
             var textToRequest = (textView as TextView).text.toString()
@@ -105,24 +99,18 @@ class HomeSection : AppCompatActivity() {
 
     fun selectDrawerItem(menuItem: MenuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
-        var fragment: Fragment? = null
-        //var fragmentClass: null
+        var fragmentClass: ContactFragment?
         when (menuItem.itemId) {
-            //R.id.nav_first_fragment -> fragmentClass = FirstFragment::class.java
-            //R.id.nav_second_fragment -> fragmentClass = SecondFragment::class.java
-            //R.id.nav_third_fragment -> fragmentClass = ThirdFragment::class.java
-            //else -> fragmentClass = FirstFragment::class.java
+            R.id.nav_first_fragment -> fragmentClass = ContactFragment("Contanos que curso queres agregar y que te gustaria que tenga")
+            R.id.nav_second_fragment -> fragmentClass = ContactFragment("Contanos que problema tuviste, si es posible tambien indicar el modelo del celular")
+            else ->fragmentClass = ContactFragment("No deberia estar aca")
         }
 
-        try {
-          //  fragment = fragmentClass.newInstance() as Fragment
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        toolbar?.title = menuItem.title
 
         // Insert the fragment by replacing any existing fragment
-        val fragmentManager = supportFragmentManager
-        //fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit()
+        fragmentManager = supportFragmentManager
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragmentClass!!).commit()
 
         // Highlight the selected item has been done by NavigationView
         menuItem.isChecked = true
@@ -148,5 +136,12 @@ class HomeSection : AppCompatActivity() {
         super.onConfigurationChanged(newConfig)
         // Pass any configuration change to the drawer toggles
         drawerToggle.onConfigurationChanged(newConfig)
+    }
+
+    override fun onBackPressed() {
+        if(supportFragmentManager.fragments.size != 0){
+            fragmentManager?.beginTransaction()?.remove(fragmentManager?.findFragmentById(R.id.flContent)!!)?.commit()
+            toolbar?.title = "Seleccionar Aplicacion"
+        }
     }
 }

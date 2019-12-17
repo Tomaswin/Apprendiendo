@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.widget.ListView
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,13 +12,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import android.os.StrictMode
 
 
-
 class RestClientCall : InterfaceClient{
     lateinit var retrofit1: Retrofit
     private lateinit var restClient: WebAPIService
     override fun create() {
         retrofit1 = Retrofit.Builder()
-            .baseUrl("https://shanatova.000webhostapp.com/")
+            .baseUrl("https://apprendiendo.app/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -31,7 +28,8 @@ class RestClientCall : InterfaceClient{
         var call = restClient.getApplications()
         call.enqueue(object : Callback<JsonArray> {
             override fun onFailure(call: Call<JsonArray>, t: Throwable) {
-                Log.e("JSON", t.toString())            }
+                Log.e("JSON", t.toString())
+            }
 
             override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
                 Log.i("JSON",response.body().toString())
@@ -65,9 +63,23 @@ class RestClientCall : InterfaceClient{
         StrictMode.setThreadPolicy(policy)
         var call = restClient.getSteps(course)
         if(course != ""){
-            var recipeList = StepsModel.getRecipesFromFile(call.execute().body().toString(), context)
-            return recipeList
+            return StepsModel.getRecipesFromFile(call.execute().body().toString(), context)
         }
         return ArrayList<StepsModel>()
+    }
+
+    override fun sendEmail(from: String, subject: String, to: String, content: String) {
+        var call = restClient.sendEmail(from,subject,to,content)
+        call.enqueue(object : Callback<JsonArray> {
+            override fun onResponse(call: Call<JsonArray>, response: Response<JsonArray>) {
+                Log.i("JSON",response.body().toString())
+                //Dialog correcto
+            }
+
+            override fun onFailure(call: Call<JsonArray>, t: Throwable) {
+                Log.e("JSON", t.toString())
+                //Dialog incorrecto
+            }
+        })
     }
 }

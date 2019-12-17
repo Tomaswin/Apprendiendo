@@ -1,69 +1,21 @@
 package com.example.apprendiendo
 
-import android.app.PendingIntent.getActivity
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.*
-import android.graphics.Color
 import android.graphics.PixelFormat
-import android.os.Build
 import android.os.IBinder
-import android.text.Html
-import android.view.*
-import android.widget.*
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
-import kotlinx.android.synthetic.main.activity_first_time_app.*
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.util.Log
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.os.Bundle
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.media.Image
-import com.squareup.picasso.Picasso
 import android.util.DisplayMetrics
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.view.marginLeft
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.viewpager.widget.ViewPager
 import kotlin.math.roundToInt
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.view.MotionEvent
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.widget.RelativeLayout
-import android.view.ViewGroup.MarginLayoutParams
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
-
-
-
-
-
-
-
 
 class FloatingWidgetService : Service() {
     override fun onBind(p0: Intent?): IBinder? {
@@ -78,9 +30,11 @@ class FloatingWidgetService : Service() {
     var courseRequest = ""
     var interfaceClient: InterfaceClient = RestClientCall()
     var steps = 0
+    lateinit var textView: TextView
     lateinit var btnReturn: Button
     lateinit var btnNext: Button
-
+    lateinit var pageCounter: TextView
+    lateinit var imageView: ImageView
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
         courseRequest = intent.getStringExtra("extra")
@@ -93,10 +47,12 @@ class FloatingWidgetService : Service() {
         mChatHeadView = LayoutInflater.from(this).inflate(R.layout.layout_floating_widget, null)
         btnReturn = mChatHeadView?.findViewById(R.id.btn_return) as Button
         btnNext = mChatHeadView?.findViewById(R.id.btn_next) as Button
-
+        textView = mChatHeadView?.findViewById(R.id.textview) as TextView
+        pageCounter = mChatHeadView?.findViewById(R.id.page_counter) as TextView
+        imageView = mChatHeadView?.findViewById(R.id.collapsed_iv) as ImageView
         interfaceClient.create()
         stepsList = interfaceClient.getSteps(courseRequest, applicationContext)
-
+        pageCounter.text = (steps + 1).toString() + "/" + stepsList.count().toString()
         //Add the view to the window.
         val params: WindowManager.LayoutParams
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -104,21 +60,21 @@ class FloatingWidgetService : Service() {
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                Intent.FLAG_DEBUG_LOG_RESOLUTION,
                 PixelFormat.TRANSLUCENT
             )
         } else {
             params = WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                WindowManager.LayoutParams.TYPE_PRIORITY_PHONE,
+                Intent.FLAG_DEBUG_LOG_RESOLUTION,
                 PixelFormat.TRANSLUCENT
             )
         }
 
         //Specify the chat head position
-        params.gravity = Gravity.TOP or Gravity.LEFT        //Initially view will be added to top-left corner
+        params.gravity = getGravity(stepsList[steps].positionY) or getGravity(stepsList[steps].positionX)
         params.x = 0
         params.y = 100
 
@@ -140,201 +96,90 @@ class FloatingWidgetService : Service() {
 
         //Drag and move chat head using user's touch action.
         val chatHeadImage = mChatHeadView!!.findViewById<ImageView>(R.id.collapsed_iv)
-        viewPager = mChatHeadView?.findViewById(R.id.viewPager) as ViewPager
-        var myViewPagerAdapter = MyViewPagerAdapter()
-        viewPager.adapter = myViewPagerAdapter
-        viewPager.beginFakeDrag()
-        chatHeadImage.setOnTouchListener(object : View.OnTouchListener {
-            private var lastAction: Int = 0
-            private var initialX: Int = 0
-            private var initialY: Int = 0
-            private var initialTouchX: Float = 0.toFloat()
-            private var initialTouchY: Float = 0.toFloat()
+        var lastAction: Int = 0
+        var initialX: Int = 0
+        var initialY: Int = 0
+        var initialTouchX: Float = 0.toFloat()
+        var initialTouchY: Float = 0.toFloat()
+        if(steps == 0){
+            btnReturn.text = "Return App"
+        }else{
+            btnReturn.text = getText(R.string.return_key)
+        }
+        textView.text = stepsList[steps].image
+        btnReturn.setOnClickListener {
+            if(steps == 0){
+                val intent = Intent(this@FloatingWidgetService, HomeSection::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
 
-            override fun onTouch(v: View, event: MotionEvent): Boolean {
-                when (event.action) {
-                    MotionEvent.ACTION_DOWN -> {
-
-                        //remember the initial position.
-                        initialX = params.x
-                        initialY = params.y
-
-                        //get the touch location
-                        initialTouchX = event.rawX
-                        initialTouchY = event.rawY
-
-                        lastAction = event.action
-                        return true
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        getItem(0)
-                        //As we implemented on touch listener with ACTION_MOVE,
-                        //we have to check if the previous action was ACTION_DOWN
-                        //to identify if the user clicked the view or not.
-                        val layoutExpanded = mChatHeadView!!.findViewById<LinearLayout>(R.id.layoutExpanded)
-                        layoutExpanded.visibility = View.VISIBLE
-                        val layoutCollapsed = mChatHeadView!!.findViewById<RelativeLayout>(R.id.layoutCollapsed)
-                        layoutCollapsed.visibility = View.GONE
-                        val params: WindowManager.LayoutParams
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            params = WindowManager.LayoutParams(
-                                WindowManager.LayoutParams.MATCH_PARENT,
-                                WindowManager.LayoutParams.MATCH_PARENT,
-                                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                                PixelFormat.TRANSLUCENT
-                            )
-                        } else {
-                            params = WindowManager.LayoutParams(
-                                WindowManager.LayoutParams.MATCH_PARENT,
-                                WindowManager.LayoutParams.MATCH_PARENT,
-                                WindowManager.LayoutParams.TYPE_PHONE,
-                                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                                PixelFormat.TRANSLUCENT
-                            )
-                        }
-                        params.gravity = Gravity.TOP or Gravity.LEFT        //Initially view will be added to top-left corner
-                        params.x = 0
-                        params.y = 100
-                        mWindowManager!!.updateViewLayout(mChatHeadView, params)
-                        layoutCollapsed.setOnClickListener {
-                            val layoutExpanded = mChatHeadView!!.findViewById<LinearLayout>(R.id.layoutExpanded)
-                            layoutExpanded.visibility = View.VISIBLE
-                            val layoutCollapsed = mChatHeadView!!.findViewById<RelativeLayout>(R.id.layoutCollapsed)
-                            layoutCollapsed.visibility = View.GONE
-                            val params: WindowManager.LayoutParams
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                params = WindowManager.LayoutParams(
-                                    WindowManager.LayoutParams.MATCH_PARENT,
-                                    WindowManager.LayoutParams.MATCH_PARENT,
-                                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                                    PixelFormat.TRANSLUCENT
-                                )
-                            } else {
-                                params = WindowManager.LayoutParams(
-                                    WindowManager.LayoutParams.MATCH_PARENT,
-                                    WindowManager.LayoutParams.MATCH_PARENT,
-                                    WindowManager.LayoutParams.TYPE_PHONE,
-                                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                                    PixelFormat.TRANSLUCENT
-                                )
-                            }
-                            params.gravity = Gravity.TOP or Gravity.LEFT        //Initially view will be added to top-left corner
-                            params.x = 0
-                            params.y = 100
-                            mWindowManager!!.updateViewLayout(mChatHeadView, params)
-                        }
-
-
-
-                        if(viewPager.currentItem == 0){
-                            btnReturn.text = "Return App"
-                        }else{
-                            btnReturn.text = getText(R.string.return_key)
-                        }
-
-                        btnReturn.setOnClickListener {
-                            if(viewPager.currentItem == 0){
-                                val intent = Intent(this@FloatingWidgetService, HomeSection::class.java)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                startActivity(intent)
-
-                                //close the service and remove the chat heads
-                                stopSelf()
-                            }else{
-                                viewPager.setCurrentItem(steps - 1, true)
-                                btnReturn.text = getText(R.string.return_key)
-                                btnNext.text = getText(R.string.next)
-                                val layoutExpanded = mChatHeadView!!.findViewById<LinearLayout>(R.id.layoutExpanded)
-                                layoutExpanded.visibility = View.GONE
-                                val layoutCollapsed = mChatHeadView!!.findViewById<RelativeLayout>(R.id.layoutCollapsed)
-                                layoutCollapsed.visibility = View.VISIBLE
-                                setWrapContent()
-                            }
-                        }
-                        btnNext.setOnClickListener {
-                            // checking for last page
-                            // if last page home screen will be launched
-                            if (steps + 1 < stepsList.size) {
-                                btnNext.text = getText(R.string.next)
-                                btnReturn.text = getText(R.string.return_key)
-                                viewPager.setCurrentItem(steps + 1, true)
-                                // move to next screen
-                                val layoutExpanded = mChatHeadView!!.findViewById<LinearLayout>(R.id.layoutExpanded)
-                                layoutExpanded.visibility = View.GONE
-                                val layoutCollapsed = mChatHeadView!!.findViewById<RelativeLayout>(R.id.layoutCollapsed)
-                                layoutCollapsed.visibility = View.VISIBLE
-                                setWrapContent()
-                            } else {
-                                val intent = Intent(this@FloatingWidgetService, HomeSection::class.java)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                startActivity(intent)
-                                //close the service and remove the chat heads
-                                stopSelf()
-                            }
-                        }
-
-                        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                            override fun onPageScrollStateChanged(state: Int) {
-                            }
-
-                            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                            }
-
-                            override fun onPageSelected(position: Int) {}
-
-                        })
-                        //Calculate the X and Y coordinates of the view.
-                        params.x = initialX + (event.rawX - initialTouchX).toInt()
-                        params.y = initialY + (event.rawY - initialTouchY).toInt()
-
-                        //Update the layout with new X & Y coordinate
-                        mWindowManager!!.updateViewLayout(mChatHeadView, params)
-                        lastAction = event.action
-                        return true
-                    }
-
-                    MotionEvent.ACTION_MOVE -> {
-                        params.x = initialX + (event.rawX - initialTouchX).toInt()
-                        params.y = initialY + (event.rawY - initialTouchY).toInt()
-                        mWindowManager!!.updateViewLayout(mChatHeadView, params)
-                        lastAction = event.action
-                        return true
-                    }
+                //close the service and remove the chat heads
+                stopSelf()
+            }else{
+                //viewPager.setCurrentItem(steps - 1, true)
+                btnReturn.text = getText(R.string.return_key)
+                btnNext.text = getText(R.string.next)
+                steps -= 1
+                textView.text = stepsList[steps].image
+                pageCounter.text = (steps + 1).toString() + "/" + stepsList.count().toString()
+                params.gravity = getGravity(stepsList[steps].positionY) or getGravity(stepsList[steps].positionX)
+                params.x = 0
+                params.y = 100
+                mWindowManager!!.updateViewLayout(mChatHeadView, params)
+                if(steps == 0){
+                    btnReturn.text = "Return App"
+                    btnNext.text = getText(R.string.next)
+                }else{
+                    btnReturn.text = getText(R.string.return_key)
                 }
-                return false
             }
-        })
+        }
+        btnNext.setOnClickListener {
+            // checking for last page
+            // if last page home screen will be launched
+            if (steps + 1 < stepsList.size) {
+                btnNext.text = getText(R.string.next)
+                btnReturn.text = getText(R.string.return_key)
+                steps += 1
+                textView.text = stepsList[steps].image
+                pageCounter.text = (steps + 1).toString() + "/" + stepsList.count().toString()
+                params.gravity = getGravity(stepsList[steps].positionY) or getGravity(stepsList[steps].positionX)
+                params.x = 0
+                params.y = 100
+                mWindowManager!!.updateViewLayout(mChatHeadView, params)
+                //viewPager.setCurrentItem(steps + 1, true)
+                // move to next screen
+                if(steps == stepsList.size - 1){
+                    btnNext.text = "Return App"
+                    btnReturn.text = getText(R.string.return_key)
+                }else{
+                    btnNext.text = getText(R.string.next)
+                }
+            } else {
+                btnNext.text = "Return App"
+                btnReturn.text = getText(R.string.return_key)
+                val intent = Intent(this@FloatingWidgetService, HomeSection::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                //close the service and remove the chat heads
+                stopSelf()
+            }
+        }
     }
 
-    private fun setWrapContent(){
-        val params: WindowManager.LayoutParams
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            params = WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                PixelFormat.TRANSLUCENT
-            )
-        } else {
-            params = WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-                PixelFormat.TRANSLUCENT
-            )
+    private fun getGravity(position: String): Int {
+        when (position) {
+            "LEFT" -> return Gravity.LEFT
+            "RIGHT" -> return Gravity.RIGHT
+            "TOP" -> return Gravity.TOP
+            "BOTTOM" -> return Gravity.BOTTOM
+            else -> { // Note the block
+                return Gravity.TOP
+            }
         }
-        params.gravity = Gravity.TOP or Gravity.LEFT        //Initially view will be added to top-left corner
-        params.x = 0
-        params.y = 100
-        mWindowManager!!.updateViewLayout(mChatHeadView, params)
     }
 
     private fun getItem(i: Int) {
-        steps = viewPager.currentItem + i
         if(steps == 0){
             btnReturn.text = "Return App"
         }else if(steps + 1 == stepsList.size){
@@ -345,43 +190,6 @@ class FloatingWidgetService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         if (mChatHeadView != null) mWindowManager!!.removeView(mChatHeadView)
-    }
-
-    inner class MyViewPagerAdapter : PagerAdapter() {
-        private var layoutInflater: LayoutInflater? = null
-        private var enabled = false
-
-        override fun getCount(): Int {
-            return stepsList.size
-        }
-
-        override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            layoutInflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val view = layoutInflater!!.inflate(R.layout.content_expandable_service, container, false)
-            val imageView = view.findViewById<ImageView>(R.id.imageView)
-            val marginParams = MarginLayoutParams(imageView.getLayoutParams())
-            marginParams.setMargins(350,2500,0, 0)
-            val layoutParams = LinearLayout.LayoutParams(marginParams)
-            imageView.layoutParams = layoutParams
-            Picasso.with(applicationContext).load(stepsList[position].image).placeholder(R.mipmap.ic_launcher).into(imageView)
-            val textView = view.findViewById<TextView>(R.id.textView)
-            container.addView(view)
-
-            return view
-        }
-
-        override fun isViewFromObject(view: View, obj: Any): Boolean {
-            return view === obj
-        }
-
-
-        override fun destroyItem(collection: View, position: Int, o: Any) {
-            var view: View? = o as View
-            (collection as ViewPager).removeView(view)
-            //views.remove(position)
-            view = null
-        }
-
     }
 
     fun convertDpToPixel(dp: Float, context: Context): Int {

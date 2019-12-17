@@ -7,8 +7,8 @@ import org.json.JSONException
 class StepsModel(
     val text: String,
     val image: String,
-    val positionX: Int,
-    val positionY: Int){
+    val positionX: String,
+    val positionY: String){
 
     companion object {
 
@@ -22,8 +22,8 @@ class StepsModel(
                 (0 until recipes.length()).mapTo(recipeList) {
                     StepsModel(recipes.getJSONObject(it).getString("text"),
                         recipes.getJSONObject(it).getString("image"),
-                        recipes.getJSONObject(it).getInt("xPosition"),
-                        recipes.getJSONObject(it).getInt("yPosition"))
+                        recipes.getJSONObject(it).getString("xPosition"),
+                        recipes.getJSONObject(it).getString("yPosition"))
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()

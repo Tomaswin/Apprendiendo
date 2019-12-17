@@ -15,8 +15,8 @@
 
     <string name="app_names">Intro Slider</string>
     <string name="title_activity_welcome">Home Screen</string>
-    <string name="next">NEXT</string>
-    <string name="return_key">PREVIOUS</string>
+    <string name="next">SIGUIENTE</string>
+    <string name="return_key">ATRAS</string>
     <string name="start">ENTENDIDO</string>
 
     <string name="slide_1_title">Sabias que</string>
@@ -58,4 +58,7 @@
         que queremos brindarte
     </string>
     <string name="skip">SKIP</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

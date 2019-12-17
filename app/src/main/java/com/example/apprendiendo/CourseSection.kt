@@ -25,8 +25,8 @@ import android.content.DialogInterface
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
-
+import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.fragment_contact.view.*
 
 
 class CourseSection : AppCompatActivity() {
@@ -38,7 +38,7 @@ class CourseSection : AppCompatActivity() {
     var interfaceClient: InterfaceClient = RestClientCall()
     var viewDialog = ViewDialog(this)
     var returnVal = false
-
+    lateinit var fragmentManager: FragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +47,10 @@ class CourseSection : AppCompatActivity() {
         interfaceClient.create()
         // Set a Toolbar to replace the ActionBar.
         toolbar = findViewById(R.id.toolbar)
+        toolbar?.title = "Seleccionar curso"
         setSupportActionBar(toolbar)
+        nvDrawer = findViewById(R.id.nvView)
+        setupDrawerContent(nvDrawer!!)
 
         // This will display an Up icon (<-), we will replace it with hamburger later
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -71,7 +74,6 @@ class CourseSection : AppCompatActivity() {
         listView = findViewById(R.id.course_list_view)
         interfaceClient.getCourses(applicationName, listView, applicationContext, viewDialog)
         listView.setOnItemClickListener { adapterView, view, i, l ->
-            Log.i("Me apretaron", "")
             var relativeLayout = (view as ViewGroup).getChildAt(2)
             var textView = (relativeLayout as ViewGroup).getChildAt(0)
             var textToRequest = (textView as TextView).text.toString()
@@ -84,7 +86,7 @@ class CourseSection : AppCompatActivity() {
             }
 
             if (installApp) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M && installApp) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && installApp) {
                     var intent = Intent(this, FloatingWidgetService::class.java)
                     intent.putExtra("extra", textToRequest)
                     startService(intent)
@@ -92,7 +94,7 @@ class CourseSection : AppCompatActivity() {
                 } else if (Settings.canDrawOverlays(this)) {
                     var intent = Intent(this, FloatingWidgetService::class.java)
                     intent.putExtra("extra", textToRequest)
-                    this.startService(intent)
+                    startService(intent)
                     finish()
                 } else {
                     askPermission()
@@ -121,8 +123,8 @@ class CourseSection : AppCompatActivity() {
 
     private fun installTheApp(packageApp: String) {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("App request dont found")
-        builder.setMessage("You dont have install the app, do you want to install?")
+        builder.setTitle("No se ha encontrado la aplicacion para hacer el curso")
+        builder.setMessage("Ups, no tenes la aplicacion para hacer el curso. Queres instalarla?")
         //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
@@ -175,24 +177,17 @@ class CourseSection : AppCompatActivity() {
 
     fun selectDrawerItem(menuItem: MenuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
-        var fragment: Fragment? = null
-        //var fragmentClass: null
+        var fragmentClass: ContactFragment?
         when (menuItem.itemId) {
-            //R.id.nav_first_fragment -> fragmentClass = FirstFragment::class.java
-            //R.id.nav_second_fragment -> fragmentClass = SecondFragment::class.java
-            //R.id.nav_third_fragment -> fragmentClass = ThirdFragment::class.java
-            //else -> fragmentClass = FirstFragment::class.java
+            R.id.nav_first_fragment -> fragmentClass = ContactFragment("Contanos que curso queres agregar y que te gustaria que tenga")
+            R.id.nav_second_fragment -> fragmentClass = ContactFragment("Contanos que problema tuviste, si es posible tambien indicar el modelo del celular")
+            else ->fragmentClass = ContactFragment("No deberia estar aca")
         }
 
-        try {
-            //  fragment = fragmentClass.newInstance() as Fragment
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
+        toolbar?.title = menuItem.title
         // Insert the fragment by replacing any existing fragment
-        val fragmentManager = supportFragmentManager
-        //fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit()
+        fragmentManager = supportFragmentManager
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragmentClass!!).commit()
 
         // Highlight the selected item has been done by NavigationView
         menuItem.isChecked = true
@@ -218,6 +213,17 @@ class CourseSection : AppCompatActivity() {
         super.onConfigurationChanged(newConfig)
         // Pass any configuration change to the drawer toggles
         drawerToggle.onConfigurationChanged(newConfig)
+    }
+
+    override fun onBackPressed() {
+        if(supportFragmentManager.fragments.size != 0){
+            fragmentManager?.beginTransaction()?.remove(fragmentManager?.findFragmentById(R.id.flContent)!!)?.commit()
+            toolbar?.title = "Seleccionar curso"
+        }else{
+            val intent = Intent(this, HomeSection::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 }
 
