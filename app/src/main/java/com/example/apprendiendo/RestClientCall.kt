@@ -48,6 +48,7 @@ class RestClientCall : InterfaceClient{
                 Log.i("JSON",response.body().toString())
                 val recipeList = CourseModel.getRecipesFromFile(response.body().toString(), context)
                 val adapter = CourseAdapter(context, recipeList)
+                adapter.setPackage(recipeList)
                 listView.adapter = adapter
                 viewDialog.hideDialog()
             }

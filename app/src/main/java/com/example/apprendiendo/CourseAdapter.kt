@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,7 +12,7 @@ import com.squareup.picasso.Picasso
 
 class CourseAdapter(private val context: Context, private val dataSource: ArrayList<CourseModel>) : BaseAdapter() {
     private val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
+    open var packageName = ArrayList<String>()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         // Get view for row item
@@ -37,6 +38,7 @@ class CourseAdapter(private val context: Context, private val dataSource: ArrayL
         if(recipe.image != ""){
             Picasso.with(context).load(recipe.image + ".png").placeholder(R.mipmap.ic_launcher).into(thumbnailImageView)
         }
+
         return rowView
     }
 
@@ -50,5 +52,15 @@ class CourseAdapter(private val context: Context, private val dataSource: ArrayL
 
     override fun getCount(): Int {
         return dataSource.size
+    }
+
+    fun getPackage(position: Int): String{
+        return packageName.get(position)
+    }
+
+    fun setPackage(model: ArrayList<CourseModel>) {
+        model.forEach{
+            packageName.add(it.packageName)
+        }
     }
 }

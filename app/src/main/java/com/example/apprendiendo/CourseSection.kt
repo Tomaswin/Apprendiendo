@@ -25,6 +25,8 @@ import android.content.DialogInterface
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.widget.Adapter
+import androidx.core.view.get
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.fragment_contact.view.*
 
@@ -79,8 +81,8 @@ class CourseSection : AppCompatActivity() {
             var textToRequest = (textView as TextView).text.toString()
             var installApp = true
 
-            var packageName = "com." + applicationName.toLowerCase()
-            if (!openApp(packageName)) {
+            var packageName = ((listView.adapter) as CourseAdapter).getPackage(i)
+            if (!openApp(packageName as String)) {
                 installApp = false
                 installTheApp(packageName)
             }
